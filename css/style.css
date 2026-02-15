@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.axis path,
+.axis line {
+    stroke: black;
+}
+
+.bar {
+    fill: steelblue;
+}
