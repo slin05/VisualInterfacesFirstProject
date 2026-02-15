@@ -14,6 +14,7 @@ d3.csv("data/average_heightnutrition.csv").then(function(_data) {
     
     createProteinHistogram(data);
     createHeightHistogram(data);
+    createScatterplot(data);
 });
 
 function createProteinHistogram(data) {
@@ -148,4 +149,58 @@ function createHeightHistogram(data) {
             return barWidth > 0 ? barWidth : 0;
         })
         .attr("height", d => height - y(d.length));
+}
+
+function createScatterplot(data) {
+    const margin = {top: 20, right: 30, bottom: 60, left: 60};
+    const width = 600 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+    
+    const svg = d3.select("#scatterplot")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    const x = d3.scaleLinear()
+        .domain([d3.min(data, d => d.protein) - 5, d3.max(data, d => d.protein) + 5])
+        .range([0, width]);
+    
+    const y = d3.scaleLinear()
+        .domain([d3.min(data, d => d.maleHeight) - 5, d3.max(data, d => d.maleHeight) + 5])
+        .range([height, 0]);
+    
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x));
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + 45)
+        .text("Protein Supply (g/capita/day)");
+    
+    svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y));
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -45)
+        .text("Male Height (cm)");
+    
+    svg.selectAll(".dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => x(d.protein))
+        .attr("cy", d => y(d.maleHeight))
+        .attr("r", 4);
 }

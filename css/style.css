@@ -27,3 +27,9 @@ section {
 .bar {
     fill: steelblue;
 }
+
+.dot {
+    fill: steelblue;
+    stroke: white;
+    stroke-width: 1px;
+}
