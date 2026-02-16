@@ -11,28 +11,38 @@
 
 <header>
     <h1>Global Nutrition and Height</h1>
+    <p>By Steven | Data Source: <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a>
 </header>
 
 <main>
-    <section>
-        <h2>Protein Supply Distribution</h2>
-        <div id="protein-histogram"></div>
-    </section>
+    <div class="row">
+        <section>
+            <h2>Protein Supply Distribution</h2>
+            <div id="protein-histogram"></div>
+        </section>
 
-    <section>
-        <h2>Male Height Distribution</h2>
-        <div id="height-histogram"></div>
-    </section>
+        <section>
+            <h2>Male Height Distribution</h2>
+            <div id="height-histogram"></div>
+        </section>
+    </div>
 
-    <section>
-        <h2>Protein Supply vs Male Height</h2>
+    <section class="full-width">
+        <h2>Correlation: Protein Supply vs Male Height</h2>
         <div id="scatterplot"></div>
     </section>
 
-    <section>
-        <h2>Protein Supply by Country</h2>
-        <div id="map-protein"></div>
-    </section>
+    <div class="row">
+        <section>
+            <h2>Protein Supply by Country</h2>
+            <div id="map-protein"></div>
+        </section>
+
+        <section>
+            <h2>Male Height by Country</h2>
+            <div id="map-height"></div>
+        </section>
+    </div>
 </main>
 
 <script src="js/script.js"></script>

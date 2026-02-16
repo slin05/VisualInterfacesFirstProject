@@ -20,12 +20,13 @@ Promise.all([
     createHeightHistogram(data);
     createScatterplot(data);
     createProteinMap(data, worldData);
+    createHeightMap(data, worldData);
 });
 
 function createProteinHistogram(data) {
-    const margin = {top: 20, right: 30, bottom: 60, left: 60};
-    const width = 600 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 20, bottom: 50, left: 70};
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
     
     const svg = d3.select("#protein-histogram")
         .append("svg")
@@ -90,9 +91,9 @@ function createProteinHistogram(data) {
 }
 
 function createHeightHistogram(data) {
-    const margin = {top: 20, right: 30, bottom: 60, left: 60};
-    const width = 600 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 20, bottom: 50, left: 70};
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
     
     const svg = d3.select("#height-histogram")
         .append("svg")
@@ -156,9 +157,9 @@ function createHeightHistogram(data) {
         .attr("height", d => height - y(d.length));
 }
 function createScatterplot(data) {
-    const margin = {top: 20, right: 30, bottom: 60, left: 60};
-    const width = 600 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 20, bottom: 50, left: 70};
+    const width = 800 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
     
     const svg = d3.select("#scatterplot")
         .append("svg")
@@ -210,19 +211,18 @@ function createScatterplot(data) {
 }
 
 function createProteinMap(data, worldData) {
-    const width = 800;
-    const height = 500;
+    const width = 650;
+    const height = 400;
     
     const svg = d3.select("#map-protein")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
     
-    const projection = d3.geoMercator()
-        .scale(130)
-        .translate([width / 2, height / 1.5]);
-    
+    const projection = d3.geoMercator();
     const path = d3.geoPath().projection(projection);
+    
+    projection.fitSize([width, height], worldData);
     
     const dataMap = new Map();
     data.forEach(d => {
@@ -242,7 +242,40 @@ function createProteinMap(data, worldData) {
         .attr("fill", d => {
             const value = dataMap.get(d.properties.name);
             return value ? colorScale(value) : "#ccc";
-        })
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 0.5);
+        });
+}
+
+function createHeightMap(data, worldData) {
+    const width = 650;
+    const height = 400;
+    
+    const svg = d3.select("#map-height")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    
+    const projection = d3.geoMercator();
+    const path = d3.geoPath().projection(projection);
+    
+    projection.fitSize([width, height], worldData);
+    
+    const dataMap = new Map();
+    data.forEach(d => {
+        dataMap.set(d.country, d.maleHeight);
+    });
+    
+    const colorScale = d3.scaleSequential()
+        .domain([d3.min(data, d => d.maleHeight), d3.max(data, d => d.maleHeight)])
+        .interpolator(d3.interpolateGreens);
+    
+    svg.selectAll("path")
+        .data(worldData.features)
+        .enter()
+        .append("path")
+        .attr("class", "country")
+        .attr("d", path)
+        .attr("fill", d => {
+            const value = dataMap.get(d.properties.name);
+            return value ? colorScale(value) : "#ccc";
+        });
 }
