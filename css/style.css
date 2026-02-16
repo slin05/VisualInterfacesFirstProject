@@ -33,3 +33,12 @@ section {
     stroke: white;
     stroke-width: 1px;
 }
+
+.country {
+    cursor: pointer;
+}
+
+.country:hover {
+    stroke: #333;
+    stroke-width: 2px;
+}

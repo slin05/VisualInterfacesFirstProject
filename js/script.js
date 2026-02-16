@@ -1,7 +1,11 @@
-let data;
+let data, worldData;
 
-d3.csv("data/average_heightnutrition.csv").then(function(_data) {
-    data = _data;
+Promise.all([
+    d3.csv("data/average_heightnutrition.csv"),
+    d3.json("data/world.geojson")
+]).then(function([csvData, geoData]) {
+    data = csvData;
+    worldData = geoData;
     
     data.forEach(d => {
         d.country = d.Country;
@@ -15,6 +19,7 @@ d3.csv("data/average_heightnutrition.csv").then(function(_data) {
     createProteinHistogram(data);
     createHeightHistogram(data);
     createScatterplot(data);
+    createProteinMap(data, worldData);
 });
 
 function createProteinHistogram(data) {
@@ -150,7 +155,6 @@ function createHeightHistogram(data) {
         })
         .attr("height", d => height - y(d.length));
 }
-
 function createScatterplot(data) {
     const margin = {top: 20, right: 30, bottom: 60, left: 60};
     const width = 600 - margin.left - margin.right;
@@ -203,4 +207,42 @@ function createScatterplot(data) {
         .attr("cx", d => x(d.protein))
         .attr("cy", d => y(d.maleHeight))
         .attr("r", 4);
+}
+
+function createProteinMap(data, worldData) {
+    const width = 800;
+    const height = 500;
+    
+    const svg = d3.select("#map-protein")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    
+    const projection = d3.geoMercator()
+        .scale(130)
+        .translate([width / 2, height / 1.5]);
+    
+    const path = d3.geoPath().projection(projection);
+    
+    const dataMap = new Map();
+    data.forEach(d => {
+        dataMap.set(d.country, d.protein);
+    });
+    
+    const colorScale = d3.scaleSequential()
+        .domain([d3.min(data, d => d.protein), d3.max(data, d => d.protein)])
+        .interpolator(d3.interpolateBlues);
+    
+    svg.selectAll("path")
+        .data(worldData.features)
+        .enter()
+        .append("path")
+        .attr("class", "country")
+        .attr("d", path)
+        .attr("fill", d => {
+            const value = dataMap.get(d.properties.name);
+            return value ? colorScale(value) : "#ccc";
+        })
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 0.5);
 }
