@@ -11,8 +11,30 @@
 
 <header>
     <h1>Global Nutrition and Height</h1>
-    <p>By Steven | Data Source: <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a>
+    <p>By Steven | Data Source: <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a> | Year: 2018</p>
 </header>
+
+<div class="controls">
+    <div class="control-group">
+        <label for="x-attribute">X-Axis Attribute:</label>
+        <select id="x-attribute">
+            <option value="protein">Protein Supply</option>
+            <option value="gdp">GDP per Capita</option>
+            <option value="maleHeight">Male Height</option>
+            <option value="femaleHeight">Female Height</option>
+        </select>
+    </div>
+    
+    <div class="control-group">
+        <label for="y-attribute">Y-Axis Attribute:</label>
+        <select id="y-attribute">
+            <option value="maleHeight" selected>Male Height</option>
+            <option value="femaleHeight">Female Height</option>
+            <option value="protein">Protein Supply</option>
+            <option value="gdp">GDP per Capita</option>
+        </select>
+    </div>
+</div>
 
 <main>
     <div class="row">

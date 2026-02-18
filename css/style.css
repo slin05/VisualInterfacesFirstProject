@@ -21,6 +21,48 @@ header a {
     text-decoration: none;
 }
 
+.controls {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.control-group select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.control-group select:hover {
+    border-color: steelblue;
+}
+
+.control-group select:focus {
+    outline: none;
+    border-color: steelblue;
+    box-shadow: 0 0 5px rgba(70, 130, 180, 0.3);
+}
+
 h1 {
     margin-bottom: 5px;
 }
