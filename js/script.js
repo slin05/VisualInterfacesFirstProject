@@ -1,7 +1,7 @@
 let data, worldData;
 
 Promise.all([
-    d3.csv("data/average_heightnutrition.csv"),
+    d3.csv("data/combined_data.csv"),
     d3.json("data/world.geojson")
 ]).then(function([csvData, geoData]) {
     data = csvData;
@@ -12,6 +12,7 @@ Promise.all([
         d.protein = +d.Protein_Supply;
         d.maleHeight = +d.Male_Height;
         d.femaleHeight = +d.Female_Height;
+        d.gdp = +d.GDP_Per_Capita;
     });
     
     data = data.filter(d => !isNaN(d.protein) && !isNaN(d.maleHeight) && d.protein > 0 && d.maleHeight > 0);
