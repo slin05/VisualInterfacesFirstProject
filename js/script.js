@@ -268,7 +268,22 @@ function createScatterplot(data) {
         .attr("class", "dot")
         .attr("cx", d => x(d.protein))
         .attr("cy", d => y(d.maleHeight))
-        .attr("r", 4);
+        .attr("r", 4)
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("display", "block")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px")
+                .html(`<strong>${d.country}</strong><br>Protein: ${d.protein.toFixed(1)} g/capita/day<br>Height: ${d.maleHeight.toFixed(1)} cm`);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip").style("display", "none");
+        });
 }
 
 function getColorScale(attr) {
@@ -313,5 +328,23 @@ function createMap(data, worldData, attr, container) {
         .attr("fill", d => {
             const value = dataMap.get(d.properties.name);
             return value ? colorScale(value) : "#ccc";
+        })
+        .on("mouseover", function(event, d) {
+            const value = dataMap.get(d.properties.name);
+            if (value) {
+                d3.select("#tooltip")
+                    .style("display", "block")
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 10) + "px")
+                    .html(`<strong>${d.properties.name}</strong><br>${getAttributeLabel(attr)}: ${value.toFixed(1)}`);
+            }
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip").style("display", "none");
         });
 }
