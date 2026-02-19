@@ -21,31 +21,21 @@ header a {
     text-decoration: none;
 }
 
-.controls {
-    background-color: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.map-control {
+    margin-bottom: 10px;
     display: flex;
-    gap: 30px;
-    justify-content: center;
-    align-items: center;
-}
-
-.control-group {
-    display: flex;
-    align-items: center;
     gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
-.control-group label {
+.map-control label {
     font-weight: bold;
-    color: #333;
+    font-size: 14px;
 }
 
-.control-group select {
-    padding: 8px 12px;
+.map-control select {
+    padding: 5px 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -53,11 +43,11 @@ header a {
     cursor: pointer;
 }
 
-.control-group select:hover {
+.map-control select:hover {
     border-color: steelblue;
 }
 
-.control-group select:focus {
+.map-control select:focus {
     outline: none;
     border-color: steelblue;
     box-shadow: 0 0 5px rgba(70, 130, 180, 0.3);
@@ -129,4 +119,16 @@ svg {
 .country:hover {
     stroke: #333;
     stroke-width: 1.5px;
+}
+
+#tooltip {
+    position: absolute;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 5px;
+    pointer-events: none;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
 }

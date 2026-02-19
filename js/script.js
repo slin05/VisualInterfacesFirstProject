@@ -1,6 +1,6 @@
 let data, worldData;
-let currentXAttr = 'protein';
-let currentYAttr = 'maleHeight';
+let currentLeftMapAttr = 'protein';
+let currentRightMapAttr = 'maleHeight';
 
 Promise.all([
     d3.csv("data/average_heightnutrition.csv"),
@@ -19,80 +19,60 @@ Promise.all([
     
     data = data.filter(d => !isNaN(d.protein) && !isNaN(d.maleHeight) && d.protein > 0 && d.maleHeight > 0);
     
-    updateVisualizations();
+    createProteinHistogram(data);
+    createHeightHistogram(data);
+    createScatterplot(data);
+    updateMaps();
     
-    d3.select('#x-attribute').on('change', function() {
-        currentXAttr = this.value;
-        updateVisualizations();
+    d3.select('#map-left-attribute').on('change', function() {
+        currentLeftMapAttr = this.value;
+        updateMaps();
     });
     
-    d3.select('#y-attribute').on('change', function() {
-        currentYAttr = this.value;
-        updateVisualizations();
+    d3.select('#map-right-attribute').on('change', function() {
+        currentRightMapAttr = this.value;
+        updateMaps();
     });
 });
 
-function updateVisualizations() {
-    d3.select('#protein-histogram').selectAll('*').remove();
-    d3.select('#height-histogram').selectAll('*').remove();
-    d3.select('#scatterplot').selectAll('*').remove();
+function updateMaps() {
     d3.select('#map-protein').selectAll('*').remove();
     d3.select('#map-height').selectAll('*').remove();
     
-    const rows = document.querySelectorAll('.row');
-    rows[0].querySelector('section:nth-child(1) h2').textContent = getAttributeTitle(currentXAttr) + ' Distribution';
-    rows[0].querySelector('section:nth-child(2) h2').textContent = getAttributeTitle(currentYAttr) + ' Distribution';
-    document.querySelector('.full-width h2').textContent = `Correlation: ${getAttributeTitle(currentXAttr)} vs ${getAttributeTitle(currentYAttr)}`;
-    rows[1].querySelector('section:nth-child(1) h2').textContent = getAttributeTitle(currentXAttr) + ' by Country';
-    rows[1].querySelector('section:nth-child(2) h2').textContent = getAttributeTitle(currentYAttr) + ' by Country';
-    
-    createHistogram(data, currentXAttr, '#protein-histogram');
-    createHistogram(data, currentYAttr, '#height-histogram');
-    createScatterplot(data, currentXAttr, currentYAttr);
-    createMap(data, worldData, currentXAttr, '#map-protein');
-    createMap(data, worldData, currentYAttr, '#map-height');
+    createMap(data, worldData, currentLeftMapAttr, '#map-protein');
+    createMap(data, worldData, currentRightMapAttr, '#map-height');
 }
 
 function getAttributeLabel(attr) {
     const labels = {
-        'protein': 'Protein Supply (g/capita/day)',
-        'maleHeight': 'Male Height (cm)',
-        'femaleHeight': 'Female Height (cm)',
-        'gdp': 'GDP per Capita (USD)'
-    };
-    return labels[attr];
-}
-
-function getAttributeTitle(attr) {
-    const titles = {
         'protein': 'Protein Supply',
         'maleHeight': 'Male Height',
         'femaleHeight': 'Female Height',
         'gdp': 'GDP per Capita'
     };
-    return titles[attr];
+    return labels[attr];
 }
 
-function createHistogram(data, attr, container) {
+function createProteinHistogram(data) {
     const margin = {top: 20, right: 20, bottom: 50, left: 70};
     const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
     
-    const svg = d3.select(container)
+    const svg = d3.select('#protein-histogram')
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
     
-    const attrExtent = d3.extent(data, d => d[attr]);
+    const proteinExtent = d3.extent(data, d => d.protein);
     
     const x = d3.scaleLinear()
-        .domain([attrExtent[0] - 5, attrExtent[1] + 5])
+        .domain([proteinExtent[0] - 5, proteinExtent[1] + 5])
         .range([0, width]);
     
     const histogram = d3.histogram()
-        .value(d => d[attr])
+        .value(d => d.protein)
         .domain(x.domain())
         .thresholds(x.ticks(15));
     
@@ -112,7 +92,7 @@ function createHistogram(data, attr, container) {
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + 45)
-        .text(getAttributeLabel(attr));
+        .text("Protein Supply (g/capita/day)");
     
     svg.append("g")
         .attr("class", "axis")
@@ -137,27 +117,51 @@ function createHistogram(data, attr, container) {
             const barWidth = x(d.x1) - x(d.x0) - 2;
             return barWidth > 0 ? barWidth : 0;
         })
-        .attr("height", d => height - y(d.length));
+        .attr("height", d => height - y(d.length))
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("display", "block")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px")
+                .html(`<strong>Range:</strong> ${d.x0.toFixed(1)} - ${d.x1.toFixed(1)}<br><strong>Countries:</strong> ${d.length}`);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip").style("display", "none");
+        });
 }
 
-function createScatterplot(data, xAttr, yAttr) {
+function createHeightHistogram(data) {
     const margin = {top: 20, right: 20, bottom: 50, left: 70};
-    const width = 800 - margin.left - margin.right;
+    const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
     
-    const svg = d3.select("#scatterplot")
+    const svg = d3.select('#height-histogram')
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
     
+    const heightExtent = d3.extent(data, d => d.maleHeight);
+    
     const x = d3.scaleLinear()
-        .domain([d3.min(data, d => d[xAttr]) - 5, d3.max(data, d => d[xAttr]) + 5])
+        .domain([heightExtent[0] - 5, heightExtent[1] + 5])
         .range([0, width]);
     
+    const histogram = d3.histogram()
+        .value(d => d.maleHeight)
+        .domain(x.domain())
+        .thresholds(x.ticks(15));
+    
+    const bins = histogram(data);
+    
     const y = d3.scaleLinear()
-        .domain([d3.min(data, d => d[yAttr]) - 5, d3.max(data, d => d[yAttr]) + 5])
+        .domain([0, d3.max(bins, d => d.length)])
         .range([height, 0]);
     
     svg.append("g")
@@ -170,7 +174,7 @@ function createScatterplot(data, xAttr, yAttr) {
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + 45)
-        .text(getAttributeLabel(xAttr));
+        .text("Male Height (cm)");
     
     svg.append("g")
         .attr("class", "axis")
@@ -182,15 +186,88 @@ function createScatterplot(data, xAttr, yAttr) {
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
         .attr("y", -45)
-        .text(getAttributeLabel(yAttr));
+        .text("Number of Countries");
+    
+    svg.selectAll(".bar")
+        .data(bins)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.x0) + 1)
+        .attr("y", d => y(d.length))
+        .attr("width", d => {
+            const barWidth = x(d.x1) - x(d.x0) - 2;
+            return barWidth > 0 ? barWidth : 0;
+        })
+        .attr("height", d => height - y(d.length))
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("display", "block")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px")
+                .html(`<strong>Range:</strong> ${d.x0.toFixed(1)} - ${d.x1.toFixed(1)}<br><strong>Countries:</strong> ${d.length}`);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip").style("display", "none");
+        });
+}
+
+function createScatterplot(data) {
+    const margin = {top: 20, right: 20, bottom: 50, left: 70};
+    const width = 800 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+    
+    const svg = d3.select("#scatterplot")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    const x = d3.scaleLinear()
+        .domain([d3.min(data, d => d.protein) - 5, d3.max(data, d => d.protein) + 5])
+        .range([0, width]);
+    
+    const y = d3.scaleLinear()
+        .domain([d3.min(data, d => d.maleHeight) - 5, d3.max(data, d => d.maleHeight) + 5])
+        .range([height, 0]);
+    
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x));
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + 45)
+        .text("Protein Supply (g/capita/day)");
+    
+    svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y));
+    
+    svg.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -45)
+        .text("Male Height (cm)");
     
     svg.selectAll(".dot")
         .data(data)
         .enter()
         .append("circle")
         .attr("class", "dot")
-        .attr("cx", d => x(d[xAttr]))
-        .attr("cy", d => y(d[yAttr]))
+        .attr("cx", d => x(d.protein))
+        .attr("cy", d => y(d.maleHeight))
         .attr("r", 4);
 }
 

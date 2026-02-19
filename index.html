@@ -14,28 +14,6 @@
     <p>By Steven | Data Source: <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a></p>
 </header>
 
-<div class="controls">
-    <div class="control-group">
-        <label for="x-attribute">X-Axis Attribute:</label>
-        <select id="x-attribute">
-            <option value="protein">Protein Supply</option>
-            <option value="gdp">GDP per Capita</option>
-            <option value="maleHeight">Male Height</option>
-            <option value="femaleHeight">Female Height</option>
-        </select>
-    </div>
-    
-    <div class="control-group">
-        <label for="y-attribute">Y-Axis Attribute:</label>
-        <select id="y-attribute">
-            <option value="maleHeight" selected>Male Height</option>
-            <option value="femaleHeight">Female Height</option>
-            <option value="protein">Protein Supply</option>
-            <option value="gdp">GDP per Capita</option>
-        </select>
-    </div>
-</div>
-
 <main>
     <div class="row">
         <section>
@@ -56,16 +34,36 @@
 
     <div class="row">
         <section>
-            <h2>Protein Supply by Country</h2>
+            <h2>Spatial Distribution</h2>
+            <div class="map-control">
+                <label for="map-left-attribute">Left Map:</label>
+                <select id="map-left-attribute">
+                    <option value="protein" selected>Protein Supply</option>
+                    <option value="gdp">GDP per Capita</option>
+                    <option value="maleHeight">Male Height</option>
+                    <option value="femaleHeight">Female Height</option>
+                </select>
+            </div>
             <div id="map-protein"></div>
         </section>
 
         <section>
-            <h2>Male Height by Country</h2>
+            <h2>&nbsp;</h2>
+            <div class="map-control">
+                <label for="map-right-attribute">Right Map:</label>
+                <select id="map-right-attribute">
+                    <option value="maleHeight" selected>Male Height</option>
+                    <option value="femaleHeight">Female Height</option>
+                    <option value="protein">Protein Supply</option>
+                    <option value="gdp">GDP per Capita</option>
+                </select>
+            </div>
             <div id="map-height"></div>
         </section>
     </div>
 </main>
+
+<div id="tooltip"></div>
 
 <script src="js/script.js"></script>
 </body>
