@@ -1,16 +1,18 @@
-let data, worldData;
+let data, worldData, allData;
 let currentLeftMapAttr = 'protein';
 let currentRightMapAttr = 'maleHeight';
 let selectedCountries = [];
+let currentYear = '2018';
 
 Promise.all([
     d3.csv("data/average_heightnutrition.csv"),
     d3.json("data/world.geojson")
 ]).then(function([csvData, geoData]) {
-    data = csvData;
+    allData = csvData;
     worldData = geoData;
     
-    data.forEach(d => {
+    allData.forEach(d => {
+        d.year = d.Year;
         d.country = d.Country;
         d.protein = +d.Protein_Supply;
         d.maleHeight = +d.Male_Height;
@@ -18,12 +20,15 @@ Promise.all([
         d.gdp = +d.GDP_Per_Capita;
     });
     
-    data = data.filter(d => !isNaN(d.protein) && !isNaN(d.maleHeight) && d.protein > 0 && d.maleHeight > 0);
+    filterDataByYear();
+    updateAll();
     
-    createProteinHistogram(data);
-    createHeightHistogram(data);
-    createScatterplot(data);
-    updateMaps();
+    d3.select('#year-select').on('change', function() {
+        currentYear = this.value;
+        filterDataByYear();
+        selectedCountries = [];
+        updateAll();
+    });
     
     d3.select('#map-left-attribute').on('change', function() {
         currentLeftMapAttr = this.value;
@@ -35,6 +40,22 @@ Promise.all([
         updateMaps();
     });
 });
+
+function filterDataByYear() {
+    data = allData.filter(d => d.year === currentYear);
+    data = data.filter(d => !isNaN(d.protein) && !isNaN(d.maleHeight) && d.protein > 0 && d.maleHeight > 0);
+}
+
+function updateAll() {
+    d3.select('#protein-histogram').selectAll('*').remove();
+    d3.select('#height-histogram').selectAll('*').remove();
+    d3.select('#scatterplot').selectAll('*').remove();
+    
+    createProteinHistogram(data);
+    createHeightHistogram(data);
+    createScatterplot(data);
+    updateMaps();
+}
 
 function updateMaps() {
     d3.select('#map-protein').selectAll('*').remove();
