@@ -1,6 +1,7 @@
 let data, worldData;
 let currentLeftMapAttr = 'protein';
 let currentRightMapAttr = 'maleHeight';
+let selectedCountries = [];
 
 Promise.all([
     d3.csv("data/average_heightnutrition.csv"),
@@ -132,6 +133,14 @@ function createProteinHistogram(data) {
         })
         .on("mouseout", function() {
             d3.select("#tooltip").style("display", "none");
+        })
+        .on("click", function(event, d) {
+            if (selectedCountries.length > 0 && d.length > 0 && selectedCountries[0] === d[0].country) {
+                selectedCountries = [];
+            } else {
+                selectedCountries = d.map(item => item.country);
+            }
+            updateHighlights();
         });
 }
 
@@ -214,6 +223,14 @@ function createHeightHistogram(data) {
         })
         .on("mouseout", function() {
             d3.select("#tooltip").style("display", "none");
+        })
+        .on("click", function(event, d) {
+            if (selectedCountries.length > 0 && d.length > 0 && selectedCountries[0] === d[0].country) {
+                selectedCountries = [];
+            } else {
+                selectedCountries = d.map(item => item.country);
+            }
+            updateHighlights();
         });
 }
 
@@ -283,6 +300,14 @@ function createScatterplot(data) {
         })
         .on("mouseout", function() {
             d3.select("#tooltip").style("display", "none");
+        })
+        .on("click", function(event, d) {
+            if (selectedCountries.length === 1 && selectedCountries[0] === d.country) {
+                selectedCountries = [];
+            } else {
+                selectedCountries = [d.country];
+            }
+            updateHighlights();
         });
 }
 
@@ -294,6 +319,22 @@ function getColorScale(attr) {
         'gdp': d3.interpolateOranges
     };
     return scales[attr] || d3.interpolateBlues;
+}
+
+function updateHighlights() {
+    const hasSelection = selectedCountries.length > 0;
+    
+    d3.selectAll(".bar")
+        .classed("highlighted", false)
+        .classed("dimmed", false);
+    
+    d3.selectAll(".dot")
+        .classed("highlighted", d => hasSelection && selectedCountries.includes(d.country))
+        .classed("dimmed", d => hasSelection && !selectedCountries.includes(d.country));
+    
+    d3.selectAll(".country")
+        .classed("highlighted", d => hasSelection && selectedCountries.includes(d.properties.name))
+        .classed("dimmed", d => hasSelection && !selectedCountries.includes(d.properties.name));
 }
 
 function createMap(data, worldData, attr, container) {
@@ -346,5 +387,13 @@ function createMap(data, worldData, attr, container) {
         })
         .on("mouseout", function() {
             d3.select("#tooltip").style("display", "none");
+        })
+        .on("click", function(event, d) {
+            if (selectedCountries.length === 1 && selectedCountries[0] === d.properties.name) {
+                selectedCountries = [];
+            } else {
+                selectedCountries = [d.properties.name];
+            }
+            updateHighlights();
         });
 }

@@ -102,18 +102,52 @@ svg {
 
 .bar {
     fill: steelblue;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.bar.highlighted {
+    fill: orange;
+    opacity: 1;
+}
+
+.bar.dimmed {
+    opacity: 0.3;
 }
 
 .dot {
     fill: steelblue;
     stroke: white;
     stroke-width: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.dot.highlighted {
+    fill: orange;
+    r: 6;
+    opacity: 1;
+}
+
+.dot.dimmed {
+    opacity: 0.3;
 }
 
 .country {
     cursor: pointer;
     stroke: #fff;
     stroke-width: 0.5px;
+    transition: opacity 0.2s;
+}
+
+.country.highlighted {
+    stroke: orange;
+    stroke-width: 3px;
+    opacity: 1;
+}
+
+.country.dimmed {
+    opacity: 0.3;
 }
 
 .country:hover {
