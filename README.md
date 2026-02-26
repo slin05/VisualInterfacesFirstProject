@@ -24,13 +24,16 @@ There is a dropdown at the top for the year:
 <img width="300" height="78" alt="image" src="https://github.com/user-attachments/assets/dd97cd0c-f30f-4df0-8975-0cd600bb28d2" />
 
 There is also two histograms:
+
 <img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/9c808085-2c05-4f7c-b399-a4a81a05bbaa" />
 <img width="403" height="234" alt="image" src="https://github.com/user-attachments/assets/933b8684-4f3a-4f4a-a76a-b254b82140e3" />
 
 One scatterplot map:
+
 <img width="609" height="254" alt="image" src="https://github.com/user-attachments/assets/facd3d2b-21a2-4c5e-865f-7fa6fc7ec19f" />
 
 Two choropleth maps that show world and have down drops for the things you want to compare and contrast:
+
 <img width="352" height="354" alt="image" src="https://github.com/user-attachments/assets/30abe5b2-2428-4621-b46d-9729e2562731" />
 
 ## Findings with screenshots:
