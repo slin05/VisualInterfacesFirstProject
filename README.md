@@ -77,4 +77,8 @@ Map brushing (so that people can brush over a area, allowing to select multiple 
 I used AI to debug errors that I would get while trying to push new layouts, for example: I had no visualizations show up for one and realized I made a spelling mistake in the csv file, which was why it didn't show up.
 
 ## Demo Video
-[TO BE PLACED HERE]
+Link: https://mailuc-my.sharepoint.com/:v:/g/personal/linsv_mail_uc_edu/IQAMininGcXPT7WsoGva0ym3AbJVDJ0JNlTqE5IXrU_6kpU?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=uwRQpN
+
+Embed:
+
+https://github.com/user-attachments/assets/7124dee7-d0fc-4651-9a7f-b506dc179e3d
